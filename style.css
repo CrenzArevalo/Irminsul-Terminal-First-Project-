@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: linear-gradient(rgba(26, 18, 11, 0.6), rgba(26, 18, 11, 0.8)), 
+                url('genshin-banner.png') center/cover no-repeat fixed;
+    font-family: 'Crimson Pro', serif;
+    color: #e3d5b8;
+    margin: 0;
+    padding:0;
+}
+
+input, select, textarea, button {
+    font-family: 'Crimson Pro', serif !important;
+    font-size: 1rem;
+}
+header {
+    width: 100%;
+    margin: 0;
+    padding: 0; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#header-logo {
+    display: block;
+    width: 100vw;      
+    height: auto;      
+    margin: 0; 
+    object-fit: cover; 
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5));
+}
+
+#header-logo:hover {
+    transform: scale(1.02);
+    opacity: 1;
+    filter: drop-shadow(0 0 30px rgba(188, 156, 104, 0.9));
+}
+
+header h1 {
+    font-family: 'Cinzel', serif;
+    color: #3aff04;
+    font-size: 3.5rem;
+    letter-spacing: 8px;
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+    pointer-events: none;
+    margin-top: 20px; 
+}
+
+
+.hero-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+}
+
+#feedback-form {
+    width: 100%;
+    max-width: 500px;
+    background: #e3d5b8; 
+    padding: 35px;
+    border: 1px solid #bc9c68;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    color: #3e2a1c;
+}
+
+#feedback-form h2 {
+    font-family: 'Cinzel', serif;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label { font-weight: bold; font-size: 0.9rem; color: #5d4037; display: block; margin: 10px 0 5px; }
+
+select, textarea {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255,255,255,0.4);
+    border: 1px solid #bc9c68;
+    font-family: inherit;
+    color: #3e2a1c;
+}
+
+#submit-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 15px;
+    background: #8b0000; 
+    color: #e3d5b8;
+    border: none;
+    font-family: 'Cinzel', serif;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#submit-btn:disabled { background: #555; cursor: not-allowed; }
+
+#display-area {
+    background: transparent;
+    padding: 60px 20px;
+    position: relative;
+}
+
+
+#display-area h2 {
+    font-family: 'Cinzel', serif;
+    color: #bc9c68;
+    text-align: center;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+#display-area p{
+    text-align: center;
+    color: #e3d5b8;
+    margin-bottom: 40px;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+}
+
+.lore-entry {
+    background: rgba(227, 213, 184, 0.15); 
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(188, 156, 104, 0.3);
+    border-left: 5px solid #bc9c68;
+    max-width: 700px;
+    margin: 0 auto 20px;
+    padding: 25px;
+    color: #e3d5b8;
+}
+
+.category-tag { 
+    color: #3aff04; 
+    font-weight: bold; 
+    font-size: 0.8rem; 
+}
+
+.timestamp { 
+    float: right; 
+    color: #888; 
+    font-size: 0.8rem; 
+}
+
+.entry-content {
+    font-size: 1.2rem;
+    font-style: italic;
+    margin: 15px 0;
+    font-family: 'Crimson Pro', serif; 
+}
+
+#load-more-btn {
+    display: block;
+    margin: 20px auto;
+    background: transparent;
+    color: #bc9c68;
+    border: 1px solid #bc9c68;
+    padding: 10px 20px;
+    font-family: 'Cinzel', serif;
+    cursor: pointer;
+}
+
+footer {
+     text-align: center; 
+    padding: 30px; 
+    color: #bc9c68; 
+    opacity: 0.6; 
+}
+#success-message {
+    display: none; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+#success-message h2 {
+    font-family: 'Cinzel', serif;
+    color: #bc9c68;
+    margin-bottom: 10px;
+}
+
+#success-message p {
+    color: #5d4037;
+    margin-bottom: 25px;
+    font-style: italic;
+}
+
+
+#success-message button {
+    background-color: #3e2a1c;
+    color: #e3d5b8;
+    border: 1px solid #bc9c68;
+    padding: 12px 25px;
+    font-family: 'Cinzel', serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#success-message button:hover {
+    background-color: #bc9c68;
+    color: #1a120b;
+    box-shadow: 0 0 15px rgba(188, 156, 104, 0.4);
+}
+
+/**** FOR MOBILE ACCESS ****/
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8rem; 
+        letter-spacing: 3px;
+    }
+
+    #header-logo {
+        width: 100vw; 
+        margin-bottom: 5px;
+    }
+
+    .hero-container {
+        padding: 10px; 
+    }
+
+    #feedback-form {
+        width: 95%; 
+        padding: 15px;
+    }
+
+    input, select, textarea, button {
+        font-size: 16px; 
+    }
+    #lore-form select, 
+    #lore-form button, 
+    #lore-form textarea {
+        min-height: 48px; 
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+
+    #submit-btn {
+        width: 100%; 
+        font-weight: bold;
+        letter-spacing: 1px;
+        background-color: #3e2a1c;
+        color: #e3d5b8;
+        border: 1px solid #bc9c68;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    #submit-btn:active {
+        background-color: #bc9c68;
+        color: #1a120b;
+    }
+} 
+
+

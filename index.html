@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genshin Lore Database</title>
+</head>
+<body>
+    <header>
+        <img src="genshin-header.png" id="header-logo" alt="Irminsul Terminal Logo">
+        <h1>Irminsul Terminal</h1>
+    </header>
+    
+    <main>
+        <div class="hero-container">
+            <section id="feedback-form">
+                <div id="form-wrapper">
+                    <h2>Submit Lore Insight</h2>
+                    <p style="text-align:center; color: #5d4037; margin-bottom: 20px; font-style: italic;">[ Accessing Ancient Records... ]</p>
+                    
+                    <form id="lore-form">
+    <label for="category">Select Topic:</label>
+    <select id="category" name="category"> <option value="">-- Choose Category --</option>
+        <option value="Archon Quest">Archon Quest</option>
+        <option value="Character Story">Character Story</option>
+        <option value="World Quest">World Quest</option>
+        <option value="Nation History">Nation History</option>
+        <option value="Artifact">Artifact Set</option>
+    </select>
+
+    <div id="rarity-container" style="display:none; margin-top: 15px;">
+        <label for="rarity-select">Rarity:</label>
+        <select id="rarity-select"> <option value="5-Star"> 5-Star(Legendary)</option>
+            <option value="4-Star(Rare)">4-Star(Rare)</option>
+        </select>
+    </div>
+
+                        <div id="sub-category-container" style="display:none; margin-top: 15px;">
+                            <label for="subcategory" id="sub-label">Focus:</label>
+                            <select id="subcategory" name="subcategory"></select>
+                        </div>
+
+                        <label for="feedback-text" style="margin-top:15px;">Your Insight:</label>
+                        <textarea id="feedback-text" name="feedback-text" rows="5" placeholder="Select a category first..." required disabled></textarea>
+
+                        <button type="submit" id="submit-btn" disabled>Sync with Terminal</button>
+                    </form>
+                </div>
+
+                <div id="success-message" style="display: none;">
+                    <h2>Ad Astra Abyssosque! Your insight has been recorded.</h2>
+                    <p>Thank you for completing the quest!</p>
+                    <button type="button" onclick="showFormAgain()">Submit Another</button>
+                </div>
+            </section>
+        </div> 
+
+        <section id="display-area">
+            <h2>Community Insights</h2>
+            <p>Check out what others are saying!</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Crenz Arevalo. All rights reserved.</p>
+    </footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, startAfter, serverTimestamp } 
+    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCJnGlMl5OGx2bICm737i9eoytAop8BYrY",
+        authDomain: "genshin-lore-db.firebaseapp.com",
+        projectId: "genshin-lore-db",
+        storageBucket: "genshin-lore-db.firebasestorage.app",
+        messagingSenderId: "303541594745",
+        appId: "1:303541594745:web:7f0c94d96187ddb307c2a8"
+    };
+
+    //FIREBASE CONFIGURAION
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const loreCollection = collection(db, "lore_entries");
+
+
+    const loreForm = document.getElementById('lore-form');
+    const formWrapper = document.getElementById('form-wrapper');
+    const successMessage = document.getElementById('success-message');
+    const displayArea = document.getElementById('display-area');
+    const textArea = document.getElementById('feedback-text');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    let lastVisible = null; 
+    const PAGE_SIZE = 5; 
+    const loadMoreBtn = document.createElement('button');
+    loadMoreBtn.id = "load-more-btn";
+    loadMoreBtn.innerHTML = "Load More Insights...";
+    loadMoreBtn.style.display = "none";
+    displayArea.after(loadMoreBtn);
+
+    // --- FUNCTION: Fetch and Display Insights ---
+    async function fetchInsights(isNextPage = false) {
+        let q;
+        if (isNextPage && lastVisible) {
+            q = query(loreCollection, orderBy("timestamp", "desc"), startAfter(lastVisible), limit(PAGE_SIZE));
+        } else {
+            displayArea.innerHTML = '<h2>Community Insights</h2><p>Check out what others are saying!</p>';
+            q = query(loreCollection, orderBy("timestamp", "desc"), limit(PAGE_SIZE));
+        }
+
+        const snapshot = await getDocs(q);
+        if (snapshot.empty) {
+            if (!isNextPage) displayArea.innerHTML += "<p>No insights found yet.</p>";
+            loadMoreBtn.style.display = "none";
+            return;
+        }
+
+        lastVisible = snapshot.docs[snapshot.docs.length - 1];
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            let displayTime = data.timestamp ? data.timestamp.toDate().toLocaleString() : "Syncing...";
+            
+            let subLabelDisplay = "Focus";
+            if (data.category.includes("Quest")) subLabelDisplay = "Nation";
+            else if (data.category === "Character Story") subLabelDisplay = "Character";
+            else if (data.category === "Artifact") subLabelDisplay = "Set";
+
+            const card = document.createElement('div');
+            card.classList.add('lore-entry');
+            card.innerHTML = `
+                <div class="entry-header">
+                    <span class="category-tag">${data.category}</span>
+                    <span class="timestamp">${displayTime}</span>
+                </div>
+                <div class="subcategory-text"><b>${subLabelDisplay}:</b> ${data.subcategory}</div>
+                <p class="entry-content">"${data.text}"</p>
+                <div class="entry-footer">— Submitted by Traveler</div>
+            `;
+            displayArea.appendChild(card);
+        });
+
+        loadMoreBtn.style.display = snapshot.docs.length < PAGE_SIZE ? "none" : "block";
+    }
+    window.updateSubcategories = function() {
+        const currentCat = document.getElementById('category').value;
+        const subContainer = document.getElementById('sub-category-container');
+        const rarityContainer = document.getElementById('rarity-container');
+        const subSelect = document.getElementById('subcategory');
+        const raritySelect = document.getElementById('rarity-select').value;
+        const subLabel = document.getElementById('sub-label');
+
+        rarityContainer.style.display = (currentCat === "Artifact") ? 'block' : 'none';
+
+        const data = {
+            "Archon Quest": ["Mondstadt", "Liyue", "Inazuma", "Sumeru", "Fontaine", "Natlan", "Snezhnaya", "Khaenri'ah"],
+            "World Quest": ["Mondstadt", "Liyue", "Inazuma", "Sumeru", "Fontaine", "Natlan", "Snezhnaya"],
+            "Nation History": ["Mondstadt", "Liyue", "Inazuma", "Sumeru", "Fontaine", "Natlan", "Snezhnaya"],
+            "Character Story": ["Venti", "Zhongli", "Raiden Shogun", "Nahida", "Furina", "Mavuika", "Albedo", "Alhaitham", 
+            "Amber", "Arataki Itto", "Arlecchino", "Baizhu", "Chasca", "Childe (Tartaglia)", "Chiori", "Clorinde", "Cyno", 
+            "Diluc", "Eula", "Ganyu", "Hu Tao", "Jean", "Kaedehara Kazuha", "Kamisato Ayaka", "Kamisato Ayato", "Klee", 
+            "Lyney", "Mona", "Mualani", "Navia", "Neuvillette", "Nilou", "Sangonomiya Kokomi", "Shenhe", "Sigewinne", "Tighnari", 
+            "Wanderer", "Wriothesley", "Xianyun", "Xiao", "Xilonen", "Yae Miko", "Yelan", "Yoimiya"],
+            "Artifact": {
+                "5-Star": ["Archaic Petra", "Blizzard Strayer", "Deepwood Memories", "Desert Pavilion Chronicle", "Echoes of an Offering", 
+                "Emblem of Severed Fate", "Flower of Paradise Lost", "Gilded Dreams", "Gladiator's Finale", "Golden Troupe", "Heart of Depth", 
+                "Husk of Opulent Dreams", "Marechaussee Hunter", "Nighttime Whispers", "Noblesse Oblige", "Nymph's Dream", "Obsidian Codex", 
+                "Ocean-Hued Clam", "Pale Flame", "Retracing Bolide", "Scroll of the Hero", "Shimenawa's Reminiscence", "Tenacity of the Millelith", 
+                "Thundering Fury", "Vermillion Hereafter", "Viridescent Venerer", "Wanderer's Troupe"],
+                "4-Star(Rare)": ["Berserker", "Brave Heart", "Defender's Will", "Gambler", "Instructor", 
+                "Martial Artist", "Scholar", "The Exile", "Tiny Miracle"]
+            }
+        };
+
+        subSelect.innerHTML = ""; 
+
+        if (currentCat !== "") {
+            textArea.disabled = false;
+            submitBtn.disabled = false;
+            textArea.placeholder = "Whats on your mind?";
+
+            let listToShow = (currentCat === "Artifact") ? data[currentCat][raritySelect.trim()] : data[currentCat];
+            subLabel.innerHTML = currentCat.includes("Quest") ? "Which Nation?" : (currentCat === "Character Story" ? "Which Character?" : "Which Artifact Set?");
+
+            if (listToShow && listToShow.length > 0) {
+                subContainer.style.display = 'block';
+                listToShow.forEach(item => {
+                    let opt = document.createElement('option');
+                    opt.value = opt.innerHTML = item;
+                    subSelect.appendChild(opt);
+                });
+            }
+        } else {
+            subContainer.style.display = 'none';
+            rarityContainer.style.display = 'none';
+            textArea.disabled = true;
+            submitBtn.disabled = true;
+            textArea.value = "";
+            textArea.placeholder = "Select a category first...";
+        }
+    };
+    loreForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const category = document.getElementById('category').value;
+        const subcategory = document.getElementById('subcategory').value;
+        const text = textArea.value;
+
+        try {
+            await addDoc(loreCollection, {
+                category: category,
+                subcategory: subcategory,
+                text: text,
+                timestamp: serverTimestamp()
+            });
+            formWrapper.style.display = 'none';
+            successMessage.style.display = 'block';
+            loreForm.reset();
+            fetchInsights(); 
+        } catch (error) {
+            console.error("Firebase Error:", error);
+        }
+    });
+
+    window.showFormAgain = function() {
+        formWrapper.style.display = 'block';
+        successMessage.style.display = 'none';
+        textArea.value = "";
+        updateSubcategories();
+    };
+    document.getElementById('category').addEventListener('change', updateSubcategories);
+    document.getElementById('rarity-select').addEventListener('change', updateSubcategories);
+    loadMoreBtn.addEventListener('click', () => fetchInsights(true));
+    
+    fetchInsights();
+</script>
+</body>
+</html>
