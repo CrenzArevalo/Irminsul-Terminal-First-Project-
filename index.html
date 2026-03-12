@@ -101,7 +101,6 @@
     loadMoreBtn.style.display = "none";
     displayArea.after(loadMoreBtn);
 
-    // --- FUNCTION: Fetch and Display Insights ---
     async function fetchInsights(isNextPage = false) {
         let q;
         if (isNextPage && lastVisible) {
@@ -146,62 +145,69 @@
         loadMoreBtn.style.display = snapshot.docs.length < PAGE_SIZE ? "none" : "block";
     }
     window.updateSubcategories = function() {
-        const currentCat = document.getElementById('category').value;
-        const subContainer = document.getElementById('sub-category-container');
-        const rarityContainer = document.getElementById('rarity-container');
-        const subSelect = document.getElementById('subcategory');
-        const raritySelect = document.getElementById('rarity-select').value;
-        const subLabel = document.getElementById('sub-label');
+    const currentCat = document.getElementById('category').value;
+    const subContainer = document.getElementById('sub-category-container');
+    const rarityContainer = document.getElementById('rarity-container');
+    const subSelect = document.getElementById('subcategory');
+    const raritySelect = document.getElementById('rarity-select').value;
+    const subLabel = document.getElementById('sub-label');
 
-        rarityContainer.style.display = (currentCat === "Artifact") ? 'block' : 'none';
+    rarityContainer.style.display = (currentCat === "Artifact") ? 'block': 'none' ;
 
-        const data = {
-            "Archon Quest": ["Mondstadt", "Liyue", "Inazuma", "Sumeru", "Fontaine", "Natlan", "Snezhnaya", "Khaenri'ah"],
-            "World Quest": ["Mondstadt", "Liyue", "Inazuma", "Sumeru", "Fontaine", "Natlan", "Snezhnaya"],
-            "Nation History": ["Mondstadt", "Liyue", "Inazuma", "Sumeru", "Fontaine", "Natlan", "Snezhnaya"],
-            "Character Story": ["Venti", "Zhongli", "Raiden Shogun", "Nahida", "Furina", "Mavuika", "Albedo", "Alhaitham", 
-            "Amber", "Arataki Itto", "Arlecchino", "Baizhu", "Chasca", "Childe (Tartaglia)", "Chiori", "Clorinde", "Cyno", 
-            "Diluc", "Eula", "Ganyu", "Hu Tao", "Jean", "Kaedehara Kazuha", "Kamisato Ayaka", "Kamisato Ayato", "Klee", 
-            "Lyney", "Mona", "Mualani", "Navia", "Neuvillette", "Nilou", "Sangonomiya Kokomi", "Shenhe", "Sigewinne", "Tighnari", 
-            "Wanderer", "Wriothesley", "Xianyun", "Xiao", "Xilonen", "Yae Miko", "Yelan", "Yoimiya"],
-            "Artifact": {
-                "5-Star": ["Archaic Petra", "Blizzard Strayer", "Deepwood Memories", "Desert Pavilion Chronicle", "Echoes of an Offering", 
-                "Emblem of Severed Fate", "Flower of Paradise Lost", "Gilded Dreams", "Gladiator's Finale", "Golden Troupe", "Heart of Depth", 
-                "Husk of Opulent Dreams", "Marechaussee Hunter", "Nighttime Whispers", "Noblesse Oblige", "Nymph's Dream", "Obsidian Codex", 
-                "Ocean-Hued Clam", "Pale Flame", "Retracing Bolide", "Scroll of the Hero", "Shimenawa's Reminiscence", "Tenacity of the Millelith", 
-                "Thundering Fury", "Vermillion Hereafter", "Viridescent Venerer", "Wanderer's Troupe"],
-                "4-Star(Rare)": ["Berserker", "Brave Heart", "Defender's Will", "Gambler", "Instructor", 
-                "Martial Artist", "Scholar", "The Exile", "Tiny Miracle"]
-            }
-        };
-
-        subSelect.innerHTML = ""; 
-
-        if (currentCat !== "") {
-            textArea.disabled = false;
-            submitBtn.disabled = false;
-            textArea.placeholder = "Whats on your mind?";
-
-            let listToShow = (currentCat === "Artifact") ? data[currentCat][raritySelect.trim()] : data[currentCat];
-            subLabel.innerHTML = currentCat.includes("Quest") ? "Which Nation?" : (currentCat === "Character Story" ? "Which Character?" : "Which Artifact Set?");
-
-            if (listToShow && listToShow.length > 0) {
-                subContainer.style.display = 'block';
-                listToShow.forEach(item => {
-                    let opt = document.createElement('option');
-                    opt.value = opt.innerHTML = item;
-                    subSelect.appendChild(opt);
-                });
-            }
-        } else {
-            subContainer.style.display = 'none';
-            rarityContainer.style.display = 'none';
-            textArea.disabled = true;
-            submitBtn.disabled = true;
-            textArea.value = "";
-            textArea.placeholder = "Select a category first...";
+    const data = {
+        "Archon Quest": ["Mondstadt", "Liyue", "Inazuma", "Sumeru", "Fontaine", "Natlan", "Snezhnaya", "Khaenri'ah"],
+        "World Quest": ["Mondstadt", "Liyue", "Inazuma", "Sumeru", "Fontaine", "Natlan", "Snezhnaya", "Khaenri'ah"], 
+        "Nation History": ["Mondstadt", "Liyue", "Inazuma", "Sumeru", "Fontaine", "Natlan", "Snezhnaya", "Khaenri'ah"],
+        "Character Story": ["Venti", "Zhongli", "Raiden Shogun", "Nahida", "Furina", "Mavuika", "Albedo", "Alhaitham", 
+        "Amber", "Arataki Itto", "Arlecchino", "Baizhu", "Chasca", "Childe (Tartaglia)", "Chiori", "Clorinde", "Cyno", 
+        "Diluc", "Eula", "Ganyu", "Hu Tao", "Jean", "Kaedehara Kazuha", "Kamisato Ayaka", "Kamisato Ayato", "Klee", 
+        "Lyney", "Mona", "Mualani", "Navia", "Neuvillette", "Nilou", "Sangonomiya Kokomi", "Shenhe", "Sigewinne", "Tighnari", 
+        "Wanderer", "Wriothesley", "Xianyun", "Xiao", "Xilonen", "Yae Miko", "Yelan", "Yoimiya"],
+        "Artifact": {
+            "5-Star": ["Archaic Petra", "Blizzard Strayer", "Deepwood Memories", "Desert Pavilion Chronicle", "Echoes of an Offering", 
+            "Emblem of Severed Fate", "Flower of Paradise Lost", "Gilded Dreams", "Gladiator's Finale", "Golden Troupe", "Heart of Depth", 
+            "Husk of Opulent Dreams", "Marechaussee Hunter", "Nighttime Whispers", "Noblesse Oblige", "Nymph's Dream", "Obsidian Codex", 
+            "Ocean-Hued Clam", "Pale Flame", "Retracing Bolide", "Scroll of the Hero", "Shimenawa's Reminiscence", "Tenacity of the Millelith", 
+            "Thundering Fury", "Vermillion Hereafter", "Viridescent Venerer", "Wanderer's Troupe"],
+            "4-Star(Rare)": ["Berserker", "Brave Heart", "Defender's Will", "Gambler", "Instructor", 
+            "Martial Artist", "Scholar", "The Exile", "Tiny Miracle"]
         }
     };
+
+    subSelect.innerHTML = ""; 
+
+    if (currentCat !== "") {
+        textArea.disabled = false;
+        submitBtn.disabled = false;
+        textArea.placeholder = "Whats on your mind?";
+
+        let listToShow = (currentCat === "Artifact") ? data[currentCat][raritySelect.trim()] : data[currentCat];
+        
+        if (currentCat.includes("Quest") || currentCat === "Nation History") {
+            subLabel.innerHTML = "Which Nation?";
+        } else if (currentCat === "Character Story") {
+            subLabel.innerHTML = "Which Character?";
+        } else {
+            subLabel.innerHTML = "Which Artifact Set?";
+        }
+
+        if (listToShow && listToShow.length > 0) {
+            subContainer.style.display = 'block';
+            listToShow.forEach(item => {
+                let opt = document.createElement('option');
+                opt.value = opt.innerHTML = item;
+                subSelect.appendChild(opt);
+            });
+        }
+    } else {
+        subContainer.style.display = 'none';
+        rarityContainer.style.display = 'none';
+        textArea.disabled = true;
+        submitBtn.disabled = true;
+        textArea.value = "";
+        textArea.placeholder = "Select a category first...";
+    }
+};
     loreForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const category = document.getElementById('category').value;
