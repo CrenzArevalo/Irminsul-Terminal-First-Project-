@@ -5,7 +5,7 @@
 The **Irminsul Terminal** is a community-driven database designed specifically for players to collate lore and environmental data from *Genshin Impact*. This project is a major milestone in my journey toward becoming a successful Computer Engineer, serving as a hands-on application of full-stack development and cloud integration.
 
 ### **Technical Evolution & AI Integration**
-This project represents a modern "vibe coding" workflow—leveraging **Generative AI** as a collaborative partner to bridge the gap between academic theory and professional-grade implementation. This approach allowed for rapid prototyping, advanced troubleshooting, and the successful deployment of a secure, live production environment.
+This project represents a modern workflow—leveraging **AI Assisted Programming** as a collaborative partner to bridge the gap between academic theory and professional-grade implementation. This approach allowed for rapid prototyping, advanced troubleshooting, and the successful deployment of a secure, live production environment.
 
 ### **Core Engineering Implementation**
 * **Data Architecture:** Utilized **Firebase Firestore** (NoSQL) to collate unstructured community data, ensuring real-time synchronization.
